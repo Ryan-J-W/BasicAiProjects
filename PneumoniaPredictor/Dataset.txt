@@ -1,0 +1,8 @@
+The dataset for this script was rather large and I didn't feel like fighting the upload, so I'll provide a link for the dataset download from Kaggle.com user
+Paul Mooney.  All credit for the dataset goes to him and his affiliates
+
+I would suggest using a high speed ethernet connection for the download, or it might take all day
+
+Dataset download link:
+
+https://www.kaggle.com/paultimothymooney/chest-xray-pneumonia/download
