@@ -1,4 +1,11 @@
-#import necessary modules (not all are used in final version, but all were used during development
+# Change Log:
+# modified NN structure
+# removed some layers
+# added a secondary Dense layer
+#
+# Average accuracy:
+#
+
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from keras.models import Sequential
@@ -8,33 +15,23 @@ from numpy import asarray
 from numpy import save
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import img_to_array
-import os.path as path
 from numpy import load
-import cv2
 from os import fsencode
 from os import fsdecode
-'''
-I split this file up into seperate functions to make debugging and reading easier
-'''
+
 def createDataArrays(photos, labels):
     photos, labels = loadTrainingData(photos, labels)
 
-    #convert photos and labels lists to a numpy array for future processing
-    photos = asarray(photos) 
+    photos = asarray(photos)
     labels = asarray(labels)
-    
-    #save the arrays for later use
     save('PNEUMONIA_or_NOT_photos.npy', photos)
     save('PNEUMONIA_or_NOT_labels.npy', labels)
-    
-    #prints the dimensions of each array, useful for when making compatible with NN
     print(photos.shape, labels.shape)
     createModel(photos, labels)
 def __main__():
     photos, labels = list(), list()
     createDataArrays(photos, labels)
     photos, labels = load_nparrays()
-    
 
 def load_test_data():
     test_photos, test_labels = list(), list()
@@ -82,30 +79,28 @@ def loadTrainingData(photos, labels):
 
 
 
-#loads numpy arrays into the script as variables
+
 def load_nparrays():
     photos = load('PNEUMONIA_or_NOT_photos.npy')
     labels = load('PNEUMONIA_or_NOT_labels.npy')
     return photos, labels
 
 
-#creates the NN model 
+
 def createModel(photos, labels):
     model = Sequential()
-    model.add(Conv2D(32, kernel_size=(3,3), activation='relu', input_shape=(200,200,1)))
+    model.add(Conv2D(64, kernel_size=(3,3), activation='relu', input_shape=(200,200,1)))
     model.add(MaxPooling2D(pool_size=(2,2)))
     model.add(Flatten())
     model.add(Dense(128, activation=tf.nn.relu))
-    model.add(Conv2D(32,kernel_size=(3,3), activation=tf.nn.relu, input_shape=(200,200,1)))
-    model.add(MaxPooling2D(pool_size=(2,2)))
-    model.add(Flatten())
-    model.add(Dropout(0.15))
+    model.add(Dropout(0.2))
     model.add(Dense(128, activation=tf.nn.relu))
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    model.fit(x = photos, y = labels, epochs = 100)
+    model.fit(x = photos, y = labels, epochs = 500)
     test_photos, test_labels = load_test_data()
     model.evaluate(test_photos, test_labels)
 
-    model.save(model.h5)
+
+    model.save('model.h5', model)
 
 __main__()
