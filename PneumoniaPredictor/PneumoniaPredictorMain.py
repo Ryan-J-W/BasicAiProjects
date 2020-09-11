@@ -1,3 +1,4 @@
+#import necessary modules (not all are used in final version, but all were used during development
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from keras.models import Sequential
@@ -12,20 +13,28 @@ from numpy import load
 import cv2
 from os import fsencode
 from os import fsdecode
-
+'''
+I split this file up into seperate functions to make debugging and reading easier
+'''
 def createDataArrays(photos, labels):
     photos, labels = loadTrainingData(photos, labels)
 
-    photos = asarray(photos)
+    #convert photos and labels lists to a numpy array for future processing
+    photos = asarray(photos) 
     labels = asarray(labels)
+    
+    #save the arrays for later use
     save('PNEUMONIA_or_NOT_photos.npy', photos)
     save('PNEUMONIA_or_NOT_labels.npy', labels)
+    
+    #prints the dimensions of each array, useful for when making compatible with NN
     print(photos.shape, labels.shape)
     createModel(photos, labels)
 def __main__():
     photos, labels = list(), list()
     createDataArrays(photos, labels)
     photos, labels = load_nparrays()
+    
 
 def load_test_data():
     test_photos, test_labels = list(), list()
@@ -73,14 +82,14 @@ def loadTrainingData(photos, labels):
 
 
 
-
+#loads numpy arrays into the script as variables
 def load_nparrays():
     photos = load('PNEUMONIA_or_NOT_photos.npy')
     labels = load('PNEUMONIA_or_NOT_labels.npy')
     return photos, labels
 
 
-
+#creates the NN model 
 def createModel(photos, labels):
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(3,3), activation='relu', input_shape=(200,200,1)))
