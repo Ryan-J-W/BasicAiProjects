@@ -1,0 +1,3 @@
+https://www.kaggle.com/jessicali9530/stanford-dogs-dataset
+here is the link to dowload the data
+for my model i decided to disregard the annotations
