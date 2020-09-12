@@ -1,3 +1,5 @@
+import random
+
 import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dropout, Conv2D, Flatten, Dense, MaxPooling2D, Embedding
@@ -18,11 +20,22 @@ def loadData():
         for file in listdir(path+dir):
             photo = load_img(path+dir+'/'+file, grayscale = True, color_mode = 'grayscale', target_size = (150, 150))
             photo = img_to_array(photo, None, None)
-            photos.append(photo)
-            labels.append(output)
+            if len(photos) != 0:
+                x = random.randint(0, len(photos)-1)
+                photos.insert(x, photo)
+                labels.insert(x, output)
+            else:
+                photos.append(photo)
+                labels.append(output)
         output += 1.0
+
+    for i in range(20):
+        print(labels[i])
+
+
     photos = asarray(photos)
     labels = asarray(labels)
+
     return photos, labels
 
 
@@ -33,10 +46,10 @@ def createModel(photos, labels):
     model.add(MaxPooling2D(pool_size=(2,2)))
     model.add(Flatten())
     model.add(Dense(128, activation=tf.nn.softmax))
-    model.compile(optimizer = 'adam', metrics = ['accuracy'], loss = 'spars e_categorical_crossentropy')
+    model.compile(optimizer = 'adam', metrics = ['accuracy'], loss = 'sparse_categorical_crossentropy')
     model.fit(x = photos, y = labels, epochs = 50)
-
-    model.save_weights('model.h5', model)
+    model.save('model_save.h5', model)
+    model.save_weights('model_weights.h5', model)
 
 def __main__():
     photos, labels = loadData()
