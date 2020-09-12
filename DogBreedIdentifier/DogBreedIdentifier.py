@@ -1,5 +1,5 @@
 import random
-
+from tensorflow.keras.models import load_model
 import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dropout, Conv2D, Flatten, Dense, MaxPooling2D, Embedding
@@ -11,17 +11,16 @@ from keras.preprocessing.image import img_to_array
 from numpy import load
 
 
-
 def loadData():
     photos, labels = list(), list()
     output = 0.0
     path = 'DogBreedDataset/images/Images/'
     for dir in listdir(path):
-        for file in listdir(path+dir):
-            photo = load_img(path+dir+'/'+file, grayscale = True, color_mode = 'grayscale', target_size = (150, 150))
+        for file in listdir(path + dir):
+            photo = load_img(path + dir + '/' + file, grayscale=True, color_mode='grayscale', target_size=(150, 150))
             photo = img_to_array(photo, None, None)
             if len(photos) != 0:
-                x = random.randint(0, len(photos)-1)
+                x = random.randint(0, len(photos) - 1)
                 photos.insert(x, photo)
                 labels.insert(x, output)
             else:
@@ -32,7 +31,6 @@ def loadData():
     for i in range(20):
         print(labels[i])
 
-
     photos = asarray(photos)
     labels = asarray(labels)
 
@@ -41,15 +39,16 @@ def loadData():
 
 def createModel(photos, labels):
     model = Sequential()
-    model.add(Conv2D(32, kernel_size=(3,3), activation=tf.nn.relu, input_shape = (150,150,1)))
+    model.add(Conv2D(32, kernel_size=(3, 3), activation=tf.nn.relu, input_shape=(150, 150, 1)))
     model.add(Dropout(0.2))
-    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
     model.add(Dense(128, activation=tf.nn.softmax))
-    model.compile(optimizer = 'adam', metrics = ['accuracy'], loss = 'sparse_categorical_crossentropy')
-    model.fit(x = photos, y = labels, epochs = 50)
+    model.compile(optimizer='adam', metrics=['accuracy'], loss='sparse_categorical_crossentropy')
+    model.fit(x=photos, y=labels, epochs=50)
     model.save('model_save.h5', model)
     model.save_weights('model_weights.h5', model)
+
 
 def __main__():
     photos, labels = loadData()
@@ -63,11 +62,9 @@ def __main__():
     labels = load('DogBreedLabels.npy')
     createModel(photos, labels)
 
-    model = load('model.h5')
-    pred = model.predict(photos[0].reshape(1,150,150,1))
+    model = load_model('model.h5')
+    pred = model.predict(photos[0].reshape(1, 150, 150, 1))
     print(pred.argmax())
 
 
 __main__()
-
-
