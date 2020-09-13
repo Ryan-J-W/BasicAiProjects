@@ -12,10 +12,12 @@ from numpy import load
 
 
 def loadData():
+    dog_breeds = list()
     photos, labels = list(), list()
     output = 0.0
     path = 'DogBreedDataset/images/Images/'
     for dir in listdir(path):
+        dog_breeds.append([dir[10::], output])
         for file in listdir(path + dir):
             photo = load_img(path + dir + '/' + file, grayscale=True, color_mode='grayscale', target_size=(150, 150))
             photo = img_to_array(photo, None, None)
@@ -27,7 +29,13 @@ def loadData():
                 photos.append(photo)
                 labels.append(output)
         output += 1.0
-
+    print(dog_breeds)
+    with open('DogBreedOutputsKey.txt', 'w+') as file:
+        for i in dog_breeds:
+            file.write(str(i[0]))
+            file.write(' ')
+            file.write(str(i[1]))
+            file.write('\n')
     for i in range(20):
         print(labels[i])
 
